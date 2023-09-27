@@ -225,6 +225,7 @@ def parse_image_format(s: Optional[str]) -> str:
         )
     return ext
 
+
 # Print iterations progress
 def printProgressBar(
     iteration,
@@ -234,7 +235,7 @@ def printProgressBar(
     decimals=1,
     length=50,
     # fill="█",
-    fill=u"\u26A1",
+    fill="\u26A1",
     printEnd="\r",
 ):
     """

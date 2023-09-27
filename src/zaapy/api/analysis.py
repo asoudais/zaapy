@@ -3,6 +3,7 @@ from pathlib import Path
 from matplotlib.ticker import SymmetricalLogLocator
 from zapy.api.from_simulation import Parameters
 
+
 class Plotable:
     def __init__(self, dict_plotable: dict):
         self.dict_plotable = dict_plotable
@@ -368,6 +369,10 @@ class Coordinates:
         return target_coords
 
     def _meshgrid_conversion(self, *wanted):
+        """
+        Return:
+            new meshgrid coords for the wanted geometry
+        """
         native_from_wanted = self.native_from_wanted(*wanted)
         native = native_from_wanted[0]
         target_geometry = native_from_wanted[1]
@@ -390,6 +395,7 @@ class GasField:
         data: np.ndarray,
         geometry: str,
         it: int,
+        mfl: np.ndarray,
         operation: str = "",
         *,
         directory="",
@@ -399,7 +405,7 @@ class GasField:
         self.data = data
         self.it = it
         self.operation = operation
-
+        self.mfl = mfl
         self.directory = directory
         self.coords = Coordinates(self.directory, self.geometry)
 
@@ -480,6 +486,11 @@ class GasField:
 
 
 class GasDataSet:
+    """
+    Return:
+        Dataset of the wanted quantities
+    """
+
     def __init__(
         self,
         it: int,

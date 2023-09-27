@@ -1,0 +1,13 @@
+# Python
+*.egg-info
+dist
+__pycache__
+
+# temp files
+*\#
+*~
+
+# Ignore the doc directory
+# doc/*
+
+

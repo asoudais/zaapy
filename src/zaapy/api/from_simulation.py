@@ -136,7 +136,12 @@ class Parameters:
                     self.dict[f"{k}"] = np.asarray(tmp3.get(k))
                 elif k in Tmunu_keys:
                     self.dict[f"{k}"] = np.asarray(tmp4.get(k))
-
+        if "Aphd" in field_keys:
+            self.dict["flux_func"] = np.asarray(tmp1.get("Aphd"))
+        elif "psi" in field_keys:
+            self.dict["flux_func"] = np.asarray(tmp1.get("psi"))
+        else:
+            self.dict["flux_func"] = self.dict[list(self.dict.keys())[0]] * 0.0
         return self.dict
 
     def countSimuFiles(self):

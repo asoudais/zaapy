@@ -42,10 +42,10 @@ class Plotable:
             self.okey = self.dict_plotable["ordinate"]
             self.avalue = self.dict_plotable[self.akey]
             self.ovalue = self.dict_plotable[self.okey]
-            if np.shape(self.avalue) != shape:
-                self.avalue = self.avalue[: shape[1], : shape[0]]
-            if np.shape(self.ovalue) != shape:
-                self.ovalue = self.ovalue[: shape[1], : shape[0]]
+            # if np.shape(self.avalue) != shape:
+            #     self.avalue = self.avalue[: shape[1], : shape[0]]
+            # if np.shape(self.ovalue) != shape:
+            #     self.ovalue = self.ovalue[: shape[1], : shape[0]]
 
             kw = {}
             if (norm := kwargs.get("norm")) is not None:
@@ -58,6 +58,13 @@ class Plotable:
                 vmax = kwargs.pop("vmax") if "vmax" in kwargs else np.nanmax(data)
                 kw.update({"vmin": vmin, "vmax": vmax})
 
+            mag_field_lines = self.dict_plotable["flux_func"]
+            mfl_shape = mag_field_lines.shape
+            if "levels" in kwargs:
+                nlevels = int(kwargs.pop("levels"))
+            else:
+                nlevels = 10
+
             if ax.name == "polar":
                 im = ax.pcolormesh(
                     self.ovalue,
@@ -66,6 +73,12 @@ class Plotable:
                     cmap=cmap,
                     **kwargs,
                     **kw,
+                )
+                ax.contour(
+                    self.ovalue[: mfl_shape[1], : mfl_shape[0]],
+                    self.avalue[: mfl_shape[1], : mfl_shape[0]],
+                    mag_field_lines,
+                    levels=nlevels,
                 )
                 ax.set(
                     rlim=(-1e-4 * self.avalue.min(), self.avalue.max()),
@@ -83,6 +96,13 @@ class Plotable:
                     cmap=cmap,
                     **kwargs,
                     **kw,
+                )
+                ax.contour(
+                    self.avalue[: mfl_shape[0], : mfl_shape[1]],
+                    self.ovalue[: mfl_shape[0], : mfl_shape[1]],
+                    mag_field_lines,
+                    levels=nlevels,
+                    colors="k",
                 )
                 ax.set(
                     xlim=(self.avalue.min(), self.avalue.max()),
@@ -285,6 +305,10 @@ class Coordinates:
 
     # for 2D arrays
     def target_from_native(self, target_geometry, coords):
+        """
+        Returns:
+            grid converted to the targeted geometry
+        """
         if self.geometry == "polar":
             # R, phi, z = (coords["R"], coords["phi"], coords["z"])
             R, z = (coords["R"], coords["z"])
@@ -307,7 +331,7 @@ class Coordinates:
                 phi = np.arctan2(y, x)
                 target_coords = {"R": R, "phi": phi}  # , "z": z}
                 # raise NotImplementedError(f"Target geometry {target_geometry} not implemented yet.")
-            if target_geometry == "spherical":
+            elif target_geometry == "spherical":
                 r = np.sqrt(x**2 + y**2 + z**2)
                 theta = np.arctan2(np.sqrt(x**2 + y**2), z)
                 phi = np.arctan2(y, x)
@@ -426,19 +450,21 @@ class GasField:
                 abscissa_value = abscissa_value.T
                 ordinate_value = ordinate_value.T
                 shape = np.shape(data_value)
-                if np.shape(abscissa_value) != shape:
-                    abscissa_value = abscissa_value[: shape[0], : shape[1]]
-                if np.shape(ordinate_value) != shape:
-                    ordinate_value = ordinate_value[: shape[0], : shape[1]]
+                self.mfl = self.mfl.T
+                shape = np.shape(data_value)
+                # if np.shape(abscissa_value) != shape:
+                #     abscissa_value = abscissa_value[: shape[0], : shape[1]]
+                # if np.shape(ordinate_value) != shape:
+                #     ordinate_value = ordinate_value[: shape[0], : shape[1]]
             else:
                 data_value = self.data
                 abscissa_value = abscissa_value.T
                 ordinate_value = ordinate_value.T
                 shape = np.shape(data_value)
-                if np.shape(abscissa_value) != shape:
-                    abscissa_value = abscissa_value[: shape[0], : shape[1]]
-                if np.shape(ordinate_value) != shape:
-                    ordinate_value = ordinate_value[: shape[0], : shape[1]]
+                # if np.shape(abscissa_value) != shape:
+                #     abscissa_value = abscissa_value[: shape[0], : shape[1]]
+                # if np.shape(ordinate_value) != shape:
+                #     ordinate_value = ordinate_value[: shape[0], : shape[1]]
 
             dict_plotable = {
                 "abscissa": abscissa_key,
@@ -447,6 +473,7 @@ class GasField:
                 abscissa_key: abscissa_value,
                 ordinate_key: ordinate_value,
                 data_key: data_value,
+                "flux_func": self.mfl,
             }
 
         return Plotable(dict_plotable)
@@ -473,6 +500,8 @@ class GasDataSet:
         self._read = self.params.loadSimuFile(
             it=self.it, w_keys=self.wanted_keys, spec=self.spec
         )
+        self.mfl = self._read["flux_func"]
+        del self._read["flux_func"]
         self.dict = self._read
         for key in self.dict:
             self.dict[key] = GasField(
@@ -480,6 +509,7 @@ class GasDataSet:
                 self.dict[key],
                 self.geometry,
                 self.it,
+                self.mfl,
                 "",
                 directory=directory,
             )
@@ -531,6 +561,7 @@ class GasDataSet:
                         value.data,
                         self.geometry,
                         self.it,
+                        self.mfl,
                         "",
                         directory=self.directory,
                     )
@@ -540,6 +571,7 @@ class GasDataSet:
                         value.data,
                         self.geometry,
                         self.it,
+                        self.mfl,
                         "",
                         directory=self.directory,
                     )

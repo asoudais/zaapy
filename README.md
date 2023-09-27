@@ -1,6 +1,12 @@
-# Zeltron Analysis with Python (ZAPy)
+# Zeltron AnAlysis with Python (ZAAPy)
+<!-- [![PyPI](https://img.shields.io/pypi/v/nonos.svg?logo=pypi&logoColor=white&label=PyPI)](https://pypi.org/project/zaapy)
+[![PyPI](https://img.shields.io/badge/requires-Python%20≥%203.8-blue?logo=python&logoColor=white)](https://pypi.org/project/zaapy)
+[![Documentation Status](https://readthedocs.org/projects/zaapy/badge/?version=latest)](https://nonos.readthedocs.io/en/latest/?badge=latest)
+[![pre-commit.ci status](https://results.pre-commit.ci/badge/github/asoudais/zaapy/main.svg)](https://results.pre-commit.ci/badge/github/asoudais/zaapy/main.svg)
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+[![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/charliermarsh/ruff/main/assets/badge/v2.json)](https://github.com/charliermarsh/ruff) -->
 
-zaapy is a 2D visualization command line tool for Zeltron. It works with h5-formatted data and dat-formatted data from Zeltron and GRZeltron
+zaapy is a 2D visualization command line tool for Zeltron. It works with h5-formatted data from Zeltron and GRZeltron
 
 ##### Data Formats
 
@@ -72,12 +78,12 @@ ds=GasDataSet()
 
 ```
 
-```
+<!-- ```
 cd existing_repo
 git remote add origin https://gricad-gitlab.univ-grenoble-alpes.fr/soudaisa/python-scripts-zeltron2dspherical.git
 git branch -M main
 git push -uf origin main
-```
+``` -->
 
 ## Contribute
 
@@ -87,12 +93,12 @@ We use pre-commit hooks to format the code in order to reduce bad coding behavio
 
 If you face an issue or a bug (might just be a feature :wink:), please report it as an issue on this repository
 
-## Integrate with your tools
+<!-- ## Integrate with your tools
 
-- [ ] [Set up project integrations](https://gricad-gitlab.univ-grenoble-alpes.fr/soudaisa/python-scripts-zeltron2dspherical/-/settings/integrations)
+- [ ] [Set up project integrations](https://gricad-gitlab.univ-grenoble-alpes.fr/soudaisa/python-scripts-zeltron2dspherical/-/settings/integrations) -->
 
 
-## Test and Deploy
+<!-- ## Test and Deploy
 
 Use the built-in continuous integration in GitLab.
 
@@ -100,7 +106,7 @@ Use the built-in continuous integration in GitLab.
 - [ ] [Analyze your code for known vulnerabilities with Static Application Security Testing(SAST)](https://docs.gitlab.com/ee/user/application_security/sast/)
 - [ ] [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/ee/topics/autodevops/requirements.html)
 - [ ] [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/ee/user/clusters/agent/)
-- [ ] [Set up protected environments](https://docs.gitlab.com/ee/ci/environments/protected_environments.html)
+- [ ] [Set up protected environments](https://docs.gitlab.com/ee/ci/environments/protected_environments.html) -->
 
 ***
 

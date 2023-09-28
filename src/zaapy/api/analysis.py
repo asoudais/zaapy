@@ -245,7 +245,9 @@ class Coordinates:
             # if len(axis) == 1:
 
             dictmesh[reducted[0]], dictmesh[reducted[1]] = np.meshgrid(
-                dictcoords[reducted[0]], dictcoords[reducted[1]]
+                dictcoords[reducted[0]],
+                dictcoords[reducted[1]],
+                indexing="ij",
             )
             # axismed = "".join([axis[0], "med"])
             # dictmesh[axis[0]] = vars(self)[axismed]
@@ -450,9 +452,6 @@ class GasField:
             )
             abscissa_key, ordinate_key = (wanted[0], wanted[1])
             # native_from_wanted = self.coords.native_from_wanted(*wanted)[0]
-
-            abscissa_value = abscissa_value.T
-            ordinate_value = ordinate_value.T
 
             ordered = meshgrid_conversion["ordered"]
 

@@ -1,7 +1,7 @@
 import numpy as np
 import argparse
 from typing import Any, List, Optional, Union
-from zapy.config import DEFAULTS
+from zaapy.config import DEFAULTS
 
 
 def init_parser() -> argparse.ArgumentParser:
@@ -225,6 +225,7 @@ def parse_image_format(s: Optional[str]) -> str:
         )
     return ext
 
+
 # Print iterations progress
 def printProgressBar(
     iteration,
@@ -234,7 +235,7 @@ def printProgressBar(
     decimals=1,
     length=50,
     # fill="█",
-    fill=u"\u26A1",
+    fill="\u26A1",
     printEnd="\r",
 ):
     """

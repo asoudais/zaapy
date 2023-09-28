@@ -7,4 +7,3 @@ from .analysis import (
 
 from .from_simulation import Parameters
 from .satellite import compute
-

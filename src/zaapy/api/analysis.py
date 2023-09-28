@@ -1,7 +1,8 @@
 import numpy as np
 from pathlib import Path
 from matplotlib.ticker import SymmetricalLogLocator
-from zapy.api.from_simulation import Parameters
+from zaapy.api.from_simulation import Parameters
+
 
 class Plotable:
     def __init__(self, dict_plotable: dict):
@@ -42,10 +43,10 @@ class Plotable:
             self.okey = self.dict_plotable["ordinate"]
             self.avalue = self.dict_plotable[self.akey]
             self.ovalue = self.dict_plotable[self.okey]
-            if np.shape(self.avalue) != shape:
-                self.avalue = self.avalue[: shape[1], : shape[0]]
-            if np.shape(self.ovalue) != shape:
-                self.ovalue = self.ovalue[: shape[1], : shape[0]]
+            # if np.shape(self.avalue) != shape:
+            #     self.avalue = self.avalue[: shape[1], : shape[0]]
+            # if np.shape(self.ovalue) != shape:
+            #     self.ovalue = self.ovalue[: shape[1], : shape[0]]
 
             kw = {}
             if (norm := kwargs.get("norm")) is not None:
@@ -58,6 +59,13 @@ class Plotable:
                 vmax = kwargs.pop("vmax") if "vmax" in kwargs else np.nanmax(data)
                 kw.update({"vmin": vmin, "vmax": vmax})
 
+            mag_field_lines = self.dict_plotable["flux_func"]
+            mfl_shape = mag_field_lines.shape
+            if "levels" in kwargs:
+                nlevels = int(kwargs.pop("levels"))
+            else:
+                nlevels = 10
+
             if ax.name == "polar":
                 im = ax.pcolormesh(
                     self.ovalue,
@@ -66,6 +74,12 @@ class Plotable:
                     cmap=cmap,
                     **kwargs,
                     **kw,
+                )
+                ax.contour(
+                    self.ovalue[: mfl_shape[1], : mfl_shape[0]],
+                    self.avalue[: mfl_shape[1], : mfl_shape[0]],
+                    mag_field_lines,
+                    levels=nlevels,
                 )
                 ax.set(
                     rlim=(-1e-4 * self.avalue.min(), self.avalue.max()),
@@ -83,6 +97,15 @@ class Plotable:
                     cmap=cmap,
                     **kwargs,
                     **kw,
+                )
+                print("Data shape", np.shape(data))
+                print("MFL shape", mfl_shape)
+                ax.contour(
+                    self.avalue[: mfl_shape[0], : mfl_shape[1]],
+                    self.ovalue[: mfl_shape[0], : mfl_shape[1]],
+                    mag_field_lines,
+                    levels=nlevels,
+                    colors="k",
                 )
                 ax.set(
                     xlim=(self.avalue.min(), self.avalue.max()),
@@ -222,7 +245,9 @@ class Coordinates:
             # if len(axis) == 1:
 
             dictmesh[reducted[0]], dictmesh[reducted[1]] = np.meshgrid(
-                dictcoords[reducted[0]], dictcoords[reducted[1]]
+                dictcoords[reducted[0]],
+                dictcoords[reducted[1]],
+                indexing="ij",
             )
             # axismed = "".join([axis[0], "med"])
             # dictmesh[axis[0]] = vars(self)[axismed]
@@ -285,6 +310,10 @@ class Coordinates:
 
     # for 2D arrays
     def target_from_native(self, target_geometry, coords):
+        """
+        Returns:
+            grid converted to the targeted geometry
+        """
         if self.geometry == "polar":
             # R, phi, z = (coords["R"], coords["phi"], coords["z"])
             R, z = (coords["R"], coords["z"])
@@ -307,7 +336,7 @@ class Coordinates:
                 phi = np.arctan2(y, x)
                 target_coords = {"R": R, "phi": phi}  # , "z": z}
                 # raise NotImplementedError(f"Target geometry {target_geometry} not implemented yet.")
-            if target_geometry == "spherical":
+            elif target_geometry == "spherical":
                 r = np.sqrt(x**2 + y**2 + z**2)
                 theta = np.arctan2(np.sqrt(x**2 + y**2), z)
                 phi = np.arctan2(y, x)
@@ -344,6 +373,10 @@ class Coordinates:
         return target_coords
 
     def _meshgrid_conversion(self, *wanted):
+        """
+        Return:
+            new meshgrid coords for the wanted geometry
+        """
         native_from_wanted = self.native_from_wanted(*wanted)
         native = native_from_wanted[0]
         target_geometry = native_from_wanted[1]
@@ -366,6 +399,7 @@ class GasField:
         data: np.ndarray,
         geometry: str,
         it: int,
+        mfl: np.ndarray,
         operation: str = "",
         *,
         directory="",
@@ -375,11 +409,11 @@ class GasField:
         self.data = data
         self.it = it
         self.operation = operation
-
+        self.mfl = mfl
         self.directory = directory
         self.coords = Coordinates(self.directory, self.geometry)
 
-    def map(self, *wanted, x1norm: float = 1.0, x2norm: float = 1.0):
+    def map(self, *wanted, x1norm: float = 1.0, x2norm: float = 1.0) -> Plotable:
         data_key = self.field
         if x1norm == 0.0:
             raise ValueError(f"Cannot normalize abscissa axis by {x1norm}")
@@ -423,22 +457,20 @@ class GasField:
 
             if ordered:
                 data_value = self.data.T
-                abscissa_value = abscissa_value.T
-                ordinate_value = ordinate_value.T
-                shape = np.shape(data_value)
-                if np.shape(abscissa_value) != shape:
-                    abscissa_value = abscissa_value[: shape[0], : shape[1]]
-                if np.shape(ordinate_value) != shape:
-                    ordinate_value = ordinate_value[: shape[0], : shape[1]]
+                mfl_value = self.mfl.T
+                # shape = np.shape(data_value)
+                # if np.shape(abscissa_value) != shape:
+                #     abscissa_value = abscissa_value[: shape[0], : shape[1]]
+                # if np.shape(ordinate_value) != shape:
+                #     ordinate_value = ordinate_value[: shape[0], : shape[1]]
             else:
                 data_value = self.data
-                abscissa_value = abscissa_value.T
-                ordinate_value = ordinate_value.T
-                shape = np.shape(data_value)
-                if np.shape(abscissa_value) != shape:
-                    abscissa_value = abscissa_value[: shape[0], : shape[1]]
-                if np.shape(ordinate_value) != shape:
-                    ordinate_value = ordinate_value[: shape[0], : shape[1]]
+                mfl_value = self.mfl
+                # shape = np.shape(data_value)
+                # if np.shape(abscissa_value) != shape:
+                #     abscissa_value = abscissa_value[: shape[0], : shape[1]]
+                # if np.shape(ordinate_value) != shape:
+                #     ordinate_value = ordinate_value[: shape[0], : shape[1]]
 
             dict_plotable = {
                 "abscissa": abscissa_key,
@@ -447,12 +479,18 @@ class GasField:
                 abscissa_key: abscissa_value,
                 ordinate_key: ordinate_value,
                 data_key: data_value,
+                "flux_func": mfl_value,
             }
 
         return Plotable(dict_plotable)
 
 
 class GasDataSet:
+    """
+    Return:
+        Dataset of the wanted quantities
+    """
+
     def __init__(
         self,
         it: int,
@@ -473,6 +511,8 @@ class GasDataSet:
         self._read = self.params.loadSimuFile(
             it=self.it, w_keys=self.wanted_keys, spec=self.spec
         )
+        self.mfl = self._read["flux_func"]
+        del self._read["flux_func"]
         self.dict = self._read
         for key in self.dict:
             self.dict[key] = GasField(
@@ -480,6 +520,7 @@ class GasDataSet:
                 self.dict[key],
                 self.geometry,
                 self.it,
+                self.mfl,
                 "",
                 directory=directory,
             )
@@ -531,6 +572,7 @@ class GasDataSet:
                         value.data,
                         self.geometry,
                         self.it,
+                        self.mfl,
                         "",
                         directory=self.directory,
                     )
@@ -540,6 +582,7 @@ class GasDataSet:
                         value.data,
                         self.geometry,
                         self.it,
+                        self.mfl,
                         "",
                         directory=self.directory,
                     )

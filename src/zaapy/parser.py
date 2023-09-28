@@ -1,7 +1,7 @@
 import numpy as np
 import argparse
 from typing import Any, List, Optional, Union
-from zapy.config import DEFAULTS
+from zaapy.config import DEFAULTS
 
 
 def init_parser() -> argparse.ArgumentParser:

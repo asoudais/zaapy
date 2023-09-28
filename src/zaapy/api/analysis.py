@@ -1,7 +1,7 @@
 import numpy as np
 from pathlib import Path
 from matplotlib.ticker import SymmetricalLogLocator
-from zapy.api.from_simulation import Parameters
+from zaapy.api.from_simulation import Parameters
 
 
 class Plotable:

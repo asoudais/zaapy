@@ -1,4 +1,4 @@
-from zapy.api.analysis import GasField
+from zaapy.api.analysis import GasField
 import numpy as np
 
 

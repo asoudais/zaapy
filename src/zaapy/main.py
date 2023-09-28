@@ -13,11 +13,11 @@ import numpy as np
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 from typing import List, Optional
-from zapy.config import DEFAULTS
+from zaapy.config import DEFAULTS
 
-from zapy.__version__ import __version__
-from zapy.api import GasDataSet, Parameters
-from zapy.parser import (
+from zaapy.__version__ import __version__
+from zaapy.api import GasDataSet, Parameters
+from zaapy.parser import (
     init_parser,
     is_set,
     parse_image_format,

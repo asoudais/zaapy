@@ -1,4 +1,4 @@
-from zapy.main import main
+from zaapy.main import main
 
 if __name__ == "__main__":
     exit(main())

@@ -5,7 +5,7 @@ requires = [
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "zapy"
+name = "zaapy"
 description = "A tool to analyze results from Zeltron"
 authors = [
     { name = "A. Soudais" },
@@ -27,13 +27,13 @@ dependencies = [
 dynamic = ["version"]
 
 [tool.setuptools.dynamic]
-version = {attr = "zapy.__version__"}
+version = {attr = "zaapy.__version__"}
 
 [project.license]
 text = "GPL-3.0"
 
 [project.scripts]
-zapy = "zapy.main:main"
+zaapy = "zaapy.main:main"
 
 [project.readme]
 file = "README.md"

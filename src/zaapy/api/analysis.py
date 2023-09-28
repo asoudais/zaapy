@@ -98,6 +98,8 @@ class Plotable:
                     **kwargs,
                     **kw,
                 )
+                print("Data shape", np.shape(data))
+                print("MFL shape", mfl_shape)
                 ax.contour(
                     self.avalue[: mfl_shape[0], : mfl_shape[1]],
                     self.ovalue[: mfl_shape[0], : mfl_shape[1]],
@@ -409,7 +411,7 @@ class GasField:
         self.directory = directory
         self.coords = Coordinates(self.directory, self.geometry)
 
-    def map(self, *wanted, x1norm: float = 1.0, x2norm: float = 1.0):
+    def map(self, *wanted, x1norm: float = 1.0, x2norm: float = 1.0) -> Plotable:
         data_key = self.field
         if x1norm == 0.0:
             raise ValueError(f"Cannot normalize abscissa axis by {x1norm}")
@@ -449,24 +451,23 @@ class GasField:
             abscissa_key, ordinate_key = (wanted[0], wanted[1])
             # native_from_wanted = self.coords.native_from_wanted(*wanted)[0]
 
+            abscissa_value = abscissa_value.T
+            ordinate_value = ordinate_value.T
+
             ordered = meshgrid_conversion["ordered"]
 
             if ordered:
                 data_value = self.data.T
-                abscissa_value = abscissa_value.T
-                ordinate_value = ordinate_value.T
-                shape = np.shape(data_value)
-                self.mfl = self.mfl.T
-                shape = np.shape(data_value)
+                mfl_value = self.mfl.T
+                # shape = np.shape(data_value)
                 # if np.shape(abscissa_value) != shape:
                 #     abscissa_value = abscissa_value[: shape[0], : shape[1]]
                 # if np.shape(ordinate_value) != shape:
                 #     ordinate_value = ordinate_value[: shape[0], : shape[1]]
             else:
                 data_value = self.data
-                abscissa_value = abscissa_value.T
-                ordinate_value = ordinate_value.T
-                shape = np.shape(data_value)
+                mfl_value = self.mfl
+                # shape = np.shape(data_value)
                 # if np.shape(abscissa_value) != shape:
                 #     abscissa_value = abscissa_value[: shape[0], : shape[1]]
                 # if np.shape(ordinate_value) != shape:
@@ -479,7 +480,7 @@ class GasField:
                 abscissa_key: abscissa_value,
                 ordinate_key: ordinate_value,
                 data_key: data_value,
-                "flux_func": self.mfl,
+                "flux_func": mfl_value,
             }
 
         return Plotable(dict_plotable)

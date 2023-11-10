@@ -15,7 +15,7 @@ def compute(
         ret_data,
         ret_coords,
         geometry,
-        ref.on,
+        ref.it,
         operation=ref.operation,
         directory=ref.directory,
     )

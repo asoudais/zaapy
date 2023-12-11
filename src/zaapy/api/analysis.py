@@ -33,7 +33,7 @@ class Plotable:
         """
 
         data = self.data
-        shape = data.shape
+        # shape = data.shape
 
         if log:
             data = np.log10(data)
@@ -98,8 +98,6 @@ class Plotable:
                     **kwargs,
                     **kw,
                 )
-                print("Data shape", np.shape(data))
-                print("MFL shape", mfl_shape)
                 ax.contour(
                     self.avalue[: mfl_shape[0], : mfl_shape[1]],
                     self.ovalue[: mfl_shape[0], : mfl_shape[1]],

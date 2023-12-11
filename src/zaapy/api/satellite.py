@@ -13,9 +13,9 @@ def compute(
     return GasField(
         field,
         ret_data,
-        ret_coords,
         geometry,
-        ref.on,
+        ref.it,
+        ref.mfl,
         operation=ref.operation,
         directory=ref.directory,
     )

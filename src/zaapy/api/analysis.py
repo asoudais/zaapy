@@ -80,6 +80,7 @@ class Plotable:
                     self.avalue[: mfl_shape[1], : mfl_shape[0]],
                     mag_field_lines,
                     levels=nlevels,
+                    colors="k",
                 )
                 ax.set(
                     rlim=(-1e-4 * self.avalue.min(), self.avalue.max()),

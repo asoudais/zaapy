@@ -4,7 +4,7 @@
 <!-- [![Documentation Status](https://readthedocs.org/projects/zaapy/badge/?version=latest)](https://nonos.readthedocs.io/en/latest/?badge=latest)
 [![pre-commit.ci status](https://results.pre-commit.ci/badge/github/asoudais/zaapy/main.svg)](https://results.pre-commit.ci/badge/github/asoudais/zaapy/main.svg)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
-[![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/charliermarsh/ruff/main/assets/badge/v2.json)](https://github.com/charliermarsh/ruff) --> -->
+[![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/charliermarsh/ruff/main/assets/badge/v2.json)](https://github.com/charliermarsh/ruff) -->
 
 zaapy is a 2D visualization command line tool for Zeltron. It works with h5-formatted data from Zeltron and GRZeltron
 
